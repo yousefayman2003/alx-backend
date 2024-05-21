@@ -16,14 +16,14 @@ class FIFOCache(BaseCaching):
         if key is None and item is None:
             return
 
-        self.cache_data[key] = item
-        if len(self.cache_data) > BaseCaching.MAX_ITEMS:
+        if len(self.cache_data) >= BaseCaching.MAX_ITEMS:
             first = self.queue.pop(0)
             del self.cache_data[first]
 
             print("DISCARD:", first)
 
-        # add key to queue
+        # add key to cache and queue
+        self.cache_data[key] = item
         self.queue.append(key)
 
     def get(self, key):
