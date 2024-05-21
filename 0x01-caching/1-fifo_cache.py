@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """FIFOCache Module"""
 from base_caching import BaseCaching
+from collections import OrderedDict
 
 
 class FIFOCache(BaseCaching):
@@ -8,27 +9,18 @@ class FIFOCache(BaseCaching):
     def __init__(self):
         """Constructor"""
         super().__init__()
-        self.queue = []
+        self.cache_data = OrderedDict()
 
     def put(self, key, item):
         """Add an item to cache"""
-        if key is None and item is None:
+        if key is None or item is None:
             return
 
-        if key not in self.cache_data:
-            if len(self.cache_data) >= BaseCaching.MAX_ITEMS:
-                first = self.queue.pop(0)
-                del self.cache_data[first]
-
-                print("DISCARD:", first)
-
-        # add key to cache and queue
         self.cache_data[key] = item
-        self.queue.append(key)
+        if len(self.cache_data) > BaseCaching.MAX_ITEMS:
+            first_key, _ = self.cache_data.popitem(False)
+            print("DISCARD:", first_key)
 
     def get(self, key):
         """Gets an item from cache"""
-        if key is None or item is None:
-            return None
-
-        return self.cache_data.get(key)
+        return self.cache_data.get(key, None)
